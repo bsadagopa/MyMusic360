@@ -6,15 +6,15 @@
 
 #### What is MyMusic360
 <p>
-MyMusic360 is a tool for you to store your custom music prefereances. So in real-time, 
+MyMusic360 is a tool for you to store your custom music preferences. So in real-time, 
 i.e. dymanically the song that is most likely to be liked by you can be played.
 The likeness builds on your history of listening based on various static and dynamic triggers,
 like, your location, location features currently like weather etc, 
-your activity like your excercising or relaxing etc,
-your previous like favorite songs etc.
+your activity like if you are excercising (running), driving or relaxing etc,
+your previous like favorite songs during these activities etc.
 <p>
-So our goal is to provide you with the song that will make you comfortable,
-we will pull that song from any source across the web like spotify, google your personal store etc.
+So our goal is to provide you with the song that will make you comfortable - the song you will "most like" at that moment.
+We will try to select that song from multiple sources across the web like spotify, google your personal store etc.
 
 #### Key Product features:
 * recommend a friend based on similarity of songs (audio features), artists, category
