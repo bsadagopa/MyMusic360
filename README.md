@@ -4,7 +4,7 @@
 * Andrew Kling
 * Suswith Gaddam
 
-#### What is MyMusic360
+***What is MyMusic360***
 <p>
 MyMusic360 is a tool for you to store your custom music preferences. So in real-time, 
 i.e. dymanically the song that is most likely to be liked by you can be played.
@@ -16,7 +16,7 @@ your previous like favorite songs during these activities etc.
 So our goal is to provide you with the song that will make you comfortable - the song you will "most like" at that moment.
 We will try to select that song from multiple sources across the web like spotify, google your personal store etc.
 
-#### Key Product features:
+***Key Product features:***
 * recommend a friend based on similarity of songs (audio features), artists, category
 user statistics - top songs, artists, category
 * top artists/categories by region - Get most popular music based on location and then determine the best location for a user based on what kind of music they like
