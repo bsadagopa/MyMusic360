@@ -15,6 +15,8 @@ your previous like favorite songs during these activities etc.
 <p>
 So our goal is to provide you with the song that will make you comfortable - the song you will "most like" at that moment.
 We will try to select that song from multiple sources across the web like spotify, google your personal store etc.
+<p>
+You signon to the app using face detection, Microsoft FACE API AI-ML is used to capture you current mood as you logon. This information is used to recommend songs.
 
 ***Key Product features:***
 * recommend a friend based on similarity of songs (audio features), artists, category
