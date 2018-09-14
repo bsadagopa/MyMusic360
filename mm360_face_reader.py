@@ -9,14 +9,14 @@
 # ##### mm360_face_reader then sends the user details including mood to the audio selection system.
 # ##### Audio selection system will use the mood to play - recommend the music for the user.
 
-# In[3]:
+# In[36]:
 
 
 import cognitive_face as CF
 import requests
 from io import BytesIO
 from PIL import Image, ImageDraw
-import sys
+import sys, getopt, os
 import requests
 import json
 #from cv2 import *
@@ -32,7 +32,7 @@ import time
 # *** Train a PersonGroup using the PersonGroup – Train API ***<br>
 # *** Identifying unknown faces against the PersonGroup using the Face - Identify API ***<br>
 
-# In[4]:
+# In[5]:
 
 
 #######
@@ -40,17 +40,19 @@ import time
 #######
 subscription_key = '0699e543b5874c18b121d87671317d8a'
 img_url = './mm360_filename.jpg' 
+root_folder = './group_pictures'
 
 # base face_api url
 uri_base = 'https://southcentralus.api.cognitive.microsoft.com/face/v1.0'
-# detect
-uri_detect = '/detect'
-connection_uri = 'southcentralus.api.cognitive.microsoft.com'
 
 # To get some custom data
 custom_data = {'skb':'Balaji',
               'ak':'Andrew',
-              'sg':'Suswidth'}
+              'sg':'Suswidth',
+              'ns':'Nikhil',
+              'nss':'Nishanth',
+              'jgs':'Jessica',
+              'rb':'Raji'}
 emotion_metric = {
                 0:'anger',
                 1:'contempt',
@@ -65,7 +67,7 @@ CF.BaseUrl.set(uri_base)
 CF.Key.set(subscription_key)
 
 
-# In[5]:
+# In[6]:
 
 
 #######
@@ -78,29 +80,29 @@ def getBinaryFileData(filename):
         return img_data
 
 
-# In[6]:
+# In[7]:
+
+
+# def take_picture():
+#     cam = cv2.VideoCapture(0)   # 0 -> index of camera
+#     s, img = cam.read()
+#     if s:    # frame captured without any errors
+#        namedWindow("cam-test")
+#        imshow("cam-test",img)
+#        destroyWindow("cam-test")
+#        imwrite("mm360_filename.jpg",img) #save image
+
+#     # close the camera    
+#     cam.release()
+#     print("Succesfully took mm360_filename.jpg")
+
+
+# In[8]:
 
 
 #######
 # take_picture
 #######
-def take_picture():
-    cam = cv2.VideoCapture(0)   # 0 -> index of camera
-    s, img = cam.read()
-    if s:    # frame captured without any errors
-       namedWindow("cam-test")
-       imshow("cam-test",img)
-       destroyWindow("cam-test")
-       imwrite("mm360_filename.jpg",img) #save image
-
-    # close the camera    
-    cam.release()
-    print("Succesfully took mm360_filename.jpg")
-
-
-# In[7]:
-
-
 def take_picture():
     # Camera 0 is the integrated web cam on my netbook
     camera_port = 0
@@ -144,7 +146,7 @@ def take_picture():
     print(f'Campleted taking picture.')
 
 
-# In[8]:
+# In[9]:
 
 
 #######
@@ -163,7 +165,7 @@ def getRectangle(faceDictionary):
 
 # *** Detecting faces using the Face - Detect API ***<br>
 
-# In[9]:
+# In[10]:
 
 
 #######
@@ -194,7 +196,7 @@ def recogn_from_local_img(filename):
 #     print(face_ids)
 
 
-# In[10]:
+# In[11]:
 
 
 #######
@@ -217,7 +219,7 @@ def drawRectangeAroungFace(img_url):
     img.show()
 
 
-# In[11]:
+# In[12]:
 
 
 #json.loads(recogn_from_local_img_1(img_url))[0]
@@ -228,7 +230,7 @@ def drawRectangeAroungFace(img_url):
 
 # *** Delete a PersonGroup using the PersonGroup – Delete API ***<br>
 
-# In[12]:
+# In[13]:
 
 
 #######
@@ -247,7 +249,7 @@ def deletePersonGroup(personGroupId):
 
 # *** Creating PersonGroups using the PersonGroup - Create API *** <br>
 
-# In[13]:
+# In[14]:
 
 
 #######
@@ -275,7 +277,7 @@ def createPersonGroup(personImage, personGroupId):
 
 # *** Creating persons using the PersonGroup Person - Create API ***<br>
 
-# In[14]:
+# In[15]:
 
 
 #######
@@ -308,7 +310,7 @@ def createPerson(personGroupId, personName):
 
 # *** Add persons using the PersonGroup Person - Create API ***<br>
 
-# In[15]:
+# In[16]:
 
 
 #######
@@ -350,7 +352,7 @@ def addPersonFace(personImage,
 
 # *** Train a PersonGroup using the PersonGroup – Train API ***<br>
 
-# In[16]:
+# In[17]:
 
 
 #######
@@ -371,48 +373,9 @@ def trainPersonGroup(personGroupId):
         print(f'Complete training {personGroupId}')   
 
 
-# In[17]:
-
-
-# skb_group_id = createPersonGroup('./group_pictures/skb/skb2.jpg',
-#                                      "mm360_group1")
-# skb_group_id
-
-
-# In[18]:
-
-
-# balaji_client_id = createPerson("mm360_group1",
-#                                 "ak")
-
-
-# In[19]:
-
-
-# img_url = './group_pictures/ak/ak_pic2.jpeg'
-# addPersonFace(img_url, 
-#               "mm360_group1", 
-#               "94e18f3b-a394-4f12-b9ec-01b8b9c03e9d", 
-#               "ak",
-#               recogn_from_local_img(img_url))
-
-
-# In[20]:
-
-
-# trainPersonGroup("mm360_group1")
-
-
-# In[43]:
-
-
-#deletePersonGroup("skb_family_group")
-deletePersonGroup("mm360_group1")
-
-
 # *** Identifying unknown faces against the PersonGroup using the Face - Identify API ***<br>
 
-# In[21]:
+# In[18]:
 
 
 #######
@@ -442,12 +405,6 @@ def identifyPerson(filename, personGroupId):
         print(f"EXCEPTION:{e}")
 
 
-# In[37]:
-
-
-identifyPerson('mm360_filename.jpg', "mm360_group1")
-
-
 # In[ ]:
 
 
@@ -463,7 +420,7 @@ identifyPerson('mm360_filename.jpg', "mm360_group1")
 # print(max(enumerate(a),key=lambda x: x[1])[0])
 
 
-# In[22]:
+# In[20]:
 
 
 def getEmotionsAsList(emotion):
@@ -481,7 +438,7 @@ def getEmotionsAsList(emotion):
     return emotionList                         
 
 
-# In[23]:
+# In[21]:
 
 
 def guageEmotionList(emotion):
@@ -505,7 +462,7 @@ def guageEmotionList(emotion):
 # <p>4 Adds pics under each Person </p>
 # <p>5 Trains the PersonGroup </p>
 
-# In[24]:
+# In[22]:
 
 
 #######
@@ -618,21 +575,21 @@ def loadGroupImages(folder, personGroupId):
 # <b> guage the mood of the person - single value, highest from emotion will be used <br>
 # <b> call spotify wrapper layer of the software , pass the user-info: user_id, mood
 
-# In[29]:
+# In[23]:
 
 
-def handleMM_User():
+def handleMM_User(groupUserId):
     try:
         # Take Pic
         take_picture()
         # identify the person from the stored collection 
-        responses = identifyPerson('mm360_filename.jpg', "mm360_group1")
+        responses = identifyPerson(img_url, groupUserId)
         person_id = responses[0]['candidates'][0]['personId']
         # guage the mood of the person - single value, highest from emotion will be used 
         print(responses[0]['emotion'])
         mood = guageEmotionList(responses[0]['emotion'])
         print(f"Mood = {mood}")
-        info = CF.person.get("mm360_group1", person_id)
+        info = CF.person.get(groupUserId, person_id)
     except Exception as e:
         print(f"EXCEPTION-handleMM_User::{e}")
         print(f"!! FATAL, Communication to comm_To_mm360_wrapper did not occur !!")
@@ -645,7 +602,9 @@ def handleMM_User():
     }
 
     print(f"Welcome USER ==> {info['userData']}, your mood is {mood}")
-    print(f"Calling call_mm360_spotify_wrapper with {comm_To_mm360_wrapper}")
+    print(f"data_sent_to_music(spotify)_wrapper = {comm_To_mm360_wrapper}")
+    
+    return comm_To_mm360_wrapper
     #
     #  TBD -- CAll to Spotify Wrapper layer
     #
@@ -654,20 +613,118 @@ def handleMM_User():
 
 # ## Main start function call to load the images and be ready to recognize pic
 
-# In[45]:
+# In[39]:
 
 
-loadGroupImages('./group_pictures', "mm360_group1")
+#loadGroupImages('./group_pictures', "mm360_group1")
 
 
 # ## Step 2: Running the visual login and mood capture
 
-# In[31]:
+# In[40]:
 
 
 # Calling the user login i.e. photo capture for authentication and mood capture
 # user detail name, credentials and mood will be sent to the music wrapper (spotify) component
-handleMM_User()
+#handleMM_User()
+
+
+# ## Commandline MyMusic360 Aplication start code
+# 
+# ### Usage will be from mm360_app.py run importing this code.
+
+# In[37]:
+
+
+#!/usr/bin/python
+
+import sys, getopt, os
+import mm360_face_reader as mm360
+
+def usage():
+	os.system('clear')
+	print("=== WELCOME TO MYMUSIC360 ===\n")
+	print('Usage: mm360_face_reader.py [--help | --load-learn <personGroupId> | --my_music <personGroupId> --root_folder <image_root_folder>]')
+	print('Or')
+	print('mm360_face_reader.py [-h | -l <personGroupId> | -m  <personGroupId> | -f <image_root_folder>]')
+	print('\nNOTE OF CAUTION::\n')
+	print('before running --load-learn, please setup all the folders properly: ')
+	print('setup folder <group_pictures>')
+	print('subfolders, one fore each person, group_pictures/<sub-folders>')
+	print('Lastly, load the training pictures for persons under the appropriate subfolders')
+	print('After setup in complete,')
+	print('run load-learn first')
+	print('usage: ./mm360_face_reader.py --load-learn')
+	print('Now you are all set to enjoy MyMusic, by running, ')
+	print('usage: ./mm360_face_reader.py --my_music')
+	print(f"mm360_face_reader assumes default root folder ./group_pictures ")
+	print(f"To override the default root_folder use, --root_folder option")
+
+
+def main(argv):
+	load_learn = False
+	my_music = False
+	personGroupId = ''
+	root_folder = ''
+
+
+	try:
+		opts, args = getopt.getopt(argv,"hf:l:m:",["help", "load-learn=", "my_music=", "root_folder="])
+		if(len(opts) == 0):
+			usage()
+			sys.exit()
+	except getopt.GetoptError as e:
+		print(f"{e}")
+		# usage()
+		sys.exit(2)
+
+	for opt, arg in opts:
+		if opt in ("-h" , "--help"):
+			usage()
+			sys.exit()
+		elif opt in ("-l", "--load-learn"):
+			load_learn = True
+			personGroupId = arg
+			print(f"loadGroupImages({root_folder},{personGroupId})")
+			mm360.loadGroupImages(root_folder, personGroupId)
+		elif opt in ("-m", "--my_music"):
+			my_music = True
+			personGroupId = arg
+			print(f"handleMM_User({personGroupId})")
+			mm360.handleMM_User(personGroupId)
+		elif opt in ("-f", "--root_folder"):
+			root_folder = arg
+		else:
+			usage()
+			sys.exit()
+
+	print(f"load_learn = {load_learn}")
+	print(f"music-begin = {my_music}")
+	print(f"personGroupId = {personGroupId}")
+	print(f"Root Folder = {root_folder}")
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
+
+
+# In[ ]:
+
+
+# skb_group_id = createPersonGroup('./group_pictures/skb/skb2.jpg',
+#                                      "mm360_group1")
+# skb_group_id
+# balaji_client_id = createPerson("mm360_group1", "ak")
+# 
+# img_url = './group_pictures/ak/ak_pic2.jpeg'
+# addPersonFace(img_url, 
+#               "mm360_group1", 
+#               "94e18f3b-a394-4f12-b9ec-01b8b9c03e9d", 
+#               "ak",
+#               recogn_from_local_img(img_url))
+# trainPersonGroup("mm360_group1")
+#deletePersonGroup("skb_family_group")
+# deletePersonGroup("mm360_group1")
 
 
 # In[ ]:
@@ -712,16 +769,16 @@ handleMM_User()
 # CF.person.get('mm360_group1', person_id)
 
 
-# In[57]:
+# In[44]:
 
 
-# print(CF.person.lists("mm360_group1"))
+print(CF.person.lists("mm360_group1"))
 
 
-# In[58]:
+# In[43]:
 
 
-# CF.person_group.get_status("mm360_group1")
+CF.person_group.get_status("mm360_group1")
 
 
 # In[ ]:
