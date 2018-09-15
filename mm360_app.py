@@ -30,58 +30,70 @@ def usage():
 # Main 
 #################
 def main(argv):
-	load_learn = False
-	my_music = False
-	personGroupId = ''
-	root_folder = './group_pictures'
-	picToUse = ''
-	
-	try:
-		opts, args = getopt.getopt(argv,"hf:l:m:p:",["help", "root_folder=", "load-learn=", "my_music=", "pic="])
-		if(len(opts) == 0):
-			usage()
-			sys.exit()
-	except getopt.GetoptError as e:
-		print(f"{e}")
-		# usage()
-		sys.exit(2)
+    load_learn = False
+    my_music = False
+    personGroupId = ''
+    root_folder = './group_pictures'
+    picToUse = ''
+    new_face_for = ''
 
-	for opt, arg in opts:
-		if opt in ("-h" , "--help"):
-			usage()
-			sys.exit()
-		elif opt in ("-l", "--load-learn"):
-			load_learn = True
-			personGroupId = arg
-		elif opt in ("-m", "--my_music"):
-			my_music = True
-			personGroupId = arg
-		elif opt in ("-f", "--root_folder"):
-			root_folder = arg
-		elif opt in ("-p", "--pic"):
-			picToUse = arg
-		else:
-			usage()
-			sys.exit()
+    try:
+        opts, args = getopt.getopt(argv,"hf:l:m:p:n:",["help", "root_folder=", "load-learn=", "my_music=", "pic=", "new_face_for="])
+        if(len(opts) == 0):
+            usage()
+            sys.exit()
+    except getopt.GetoptError as e:
+        print(f"{e}")
+        # usage()
+        sys.exit(2)
 
-	print(f"load_learn = {load_learn}")
-	print(f"music-begin = {my_music}")
-	print(f"personGroupId = {personGroupId}")
-	print(f"Root Folder = {root_folder}")
-	print(f"Picture = {picToUse}")
+    for opt, arg in opts:
+        if opt in ("-h" , "--help"):
+            usage()
+            sys.exit()
+        elif opt in ("-l", "--load-learn"):
+            load_learn = True
+            personGroupId = arg
+        elif opt in ("-m", "--my_music"):
+            my_music = True
+            personGroupId = arg
+        elif opt in ("-f", "--root_folder"):
+            root_folder = arg
+        elif opt in ("-p", "--pic"):
+            picToUse = arg
+        elif opt in ("-n", "--new_face_for"):
+            val = arg.split(':')
+            if(len(val) != 2):
+                print(f"new_face_for, arguments not set correctly = {len(val)}")
+                sys.exit()
+            personGroupId = val[0]
+            new_face_for = val[1]
+        else:
+            usage()
+            sys.exit()
 
-	print("--- Starting to Process ---")
+    print(f"load_learn = {load_learn}")
+    print(f"music-begin = {my_music}")
+    print(f"personGroupId = {personGroupId}")
+    print(f"Root Folder = {root_folder}")
+    print(f"Picture = {picToUse}")
+    print(f"new_face_for = {new_face_for}")
 
-	if load_learn:
-		print(f"loadGroupImages({root_folder},{personGroupId})")
-		mm360.loadGroupImages(root_folder, personGroupId)
-	elif my_music:
-		print(f"handleMM_User({personGroupId})")
-		if (picToUse != ''):
-			print(f"Picture = {picToUse}")
-			mm360.handleMM_User(personGroupId, picToUse)
-		else:
-			mm360.handleMM_User(personGroupId)
+    print("--- Starting to Process ---")
+
+    if load_learn:
+        print(f"loadGroupImages({root_folder},{personGroupId})")
+        mm360.loadGroupImages(root_folder, personGroupId)
+    elif my_music:
+        print(f"handleMM_User({personGroupId})")
+        if (picToUse != ''):
+            print(f"Picture = {picToUse}")
+            mm360.handleMM_User(personGroupId, picToUse)
+        else:
+            mm360.handleMM_User(personGroupId)
+    elif new_face_for != '':
+        print(f"Loading new picture = [{picToUse}], for [{new_face_for}] in group [{personGroupId}]")
+        mm360.addFaceToExistingPerson(picToUse, personGroupId, new_face_for)
 
 #################
 # Starting Point

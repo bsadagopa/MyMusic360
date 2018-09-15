@@ -9,7 +9,7 @@
 # ##### mm360_face_reader then sends the user details including mood to the audio selection system.
 # ##### Audio selection system will use the mood to play - recommend the music for the user.
 
-# In[2]:
+# In[1]:
 
 
 import cognitive_face as CF
@@ -32,7 +32,7 @@ import time
 # *** Train a PersonGroup using the PersonGroup – Train API ***<br>
 # *** Identifying unknown faces against the PersonGroup using the Face - Identify API ***<br>
 
-# In[4]:
+# In[2]:
 
 
 #######
@@ -165,7 +165,7 @@ def getRectangle(faceDictionary):
 
 # *** Detecting faces using the Face - Detect API ***<br>
 
-# In[10]:
+# In[14]:
 
 
 #######
@@ -310,7 +310,7 @@ def createPerson(personGroupId, personName):
 
 # *** Add persons using the PersonGroup Person - Create API ***<br>
 
-# In[16]:
+# In[ ]:
 
 
 #######
@@ -340,6 +340,51 @@ def addPersonFace(personImage,
                                                #f'{personGroupId} person data',
                                                tf_rect_val)
                           
+
+        print(f"CF.person.lists: {CF.person.lists(personGroupId)}")
+        print(f"Sucessfully added ")
+
+        return persisted_face_id
+    except Exception as e:
+        print(f"EXCEPTION :: {e}")  
+        raise e
+
+
+# #### Add a New Person Face to a existing Person
+
+# In[21]:
+
+
+#######
+# addFaceToExistingPerson
+#######
+def addFaceToExistingPerson(personImage,
+                  personGroupId,
+                  user_name_key
+                  ):
+    try:
+        #add_face(image, person_group_id, person_id, user_data=None, target_face=None).
+        #targetFace=left,top,width,height
+        #"targetFace=10,10,100,100"
+        
+        personUserData = recogn_from_local_img(personImage)
+        tf_rect = personUserData[0]['faceRectangle']
+        tf_rect_val = f'{tf_rect["left"]},{tf_rect["top"]},{tf_rect["width"]},{tf_rect["height"]}'
+        print(tf_rect_val)
+            
+        # get the current members in the PersonGroup List
+        currentGroupMembers = CF.person.lists(personGroupId)
+        for user in currentGroupMembers:
+            if(user['name'] == user_name_key):
+                persisted_face_id = CF.person.add_face(personImage, 
+                                                       personGroupId, 
+                                                       user['personId'], 
+                                                       user['name'],
+                                                       #f'{personGroupId} person data',
+                                                       tf_rect_val)
+            else: #NEw addition
+                print(f"Cannot ADD Person Face for {user_name_key}, PersonGroupId={personGroupId}")
+                print(f"user['name'] = {user['name']} Not Found!!")
 
         print(f"CF.person.lists: {CF.person.lists(personGroupId)}")
         print(f"Sucessfully added ")
@@ -695,18 +740,66 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 # CF.person.get('mm360_group1', person_id)
 
 
-# In[6]:
+# In[20]:
 
 
-#print(CF.person.lists("mm360_group1"))
-print(CF.person.lists("skb-family"))
+print(CF.person.lists("mm360_group1"))
+#print(CF.person.lists("skb-family"))
 
 
-# In[5]:
+# In[18]:
 
 
-#CF.person_group.get_status("mm360_group1")
-CF.person_group.get_status("skb-family")
+users = CF.person.lists("mm360_group1")
+#users = CF.person.lists("skb-family")
+
+
+# In[19]:
+
+
+users
+
+
+# In[10]:
+
+
+for user in users:
+    print(user['name'])
+
+
+# In[15]:
+
+
+personUserData = recogn_from_local_img('group_pictures/ak/ak_pic1.jpg')
+
+
+# In[16]:
+
+
+tf_rect = personUserData[0]['faceRectangle']
+tf_rect_val = f'{tf_rect["left"]},{tf_rect["top"]},{tf_rect["width"]},{tf_rect["height"]}'
+print(tf_rect_val)
+
+
+# In[17]:
+
+
+for user in users:
+    if(user['name'] == 'ak'):
+        persisted_face_id = CF.person.add_face('group_pictures/ak/ak_pic1.jpg', 
+                                               "mm360_group1", 
+                                               user['personId'], 
+                                               user['name'],
+                                               #f'{personGroupId} person data',
+                                               tf_rect_val)
+print(persisted_face_id)
+
+
+# In[4]:
+
+
+CF.person_group.get_status("mm360_group1")
+#CF.person_group.get_status("skb-family")
 
 
 # In[ ]:
