@@ -9,7 +9,7 @@
 # ##### mm360_face_reader then sends the user details including mood to the audio selection system.
 # ##### Audio selection system will use the mood to play - recommend the music for the user.
 
-# In[9]:
+# In[2]:
 
 
 import cognitive_face as CF
@@ -32,7 +32,7 @@ import time
 # *** Train a PersonGroup using the PersonGroup – Train API ***<br>
 # *** Identifying unknown faces against the PersonGroup using the Face - Identify API ***<br>
 
-# In[10]:
+# In[3]:
 
 
 #######
@@ -46,9 +46,12 @@ root_folder = './group_pictures'
 uri_base = 'https://southcentralus.api.cognitive.microsoft.com/face/v1.0'
 
 # To get some custom data
-custom_data = {'skb':'Balaji',
-              'ak':'Andrew',
-              'sg':'Suswidth',
+# user_names = {"Andrew Kling":"klinga88","Balaji":"enfofbntl9h1f3rrs8eacbpaj","Suswith":"sushwith547", 
+#               "Garrick Stott":"guppy294","Caleb Martinez":"dragonmarx","Angel":"johnwcahill"}
+
+custom_data = {'skb':'enfofbntl9h1f3rrs8eacbpaj',
+              'ak':'klinga88',
+              'sg':'sushwith547',
               'ns':'Nikhil',
               'nss':'Nishanth',
               'jgs':'Jessica',

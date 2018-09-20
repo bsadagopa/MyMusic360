@@ -109,20 +109,20 @@ def main(argv):
             print(f"Picture = {picToUse}")
             user_data = mm360.handleMM_User(personGroupId, picToUse)
             print(f" USER_DATA = {user_data}, calling sq.get_song_for_mood()")
-            song_url = sq.get_song_for_mood(user_data['userCurrentMood'],None)
+            song_url = sq.get_song_for_mood(user_data['userCurrentMood'],user_data['userData'])
             print(f"Playing song {song_url['Song URI']}")
             webbrowser.get(chrome_path).open(song_url['Song URI'])
         else:
             user_data = mm360.handleMM_User(personGroupId)
             print(f" USER_DATA = {user_data}, calling sq.get_song_for_mood()")
-            song_url = sq.get_song_for_mood(user_data['userCurrentMood'],None)
+            song_url = sq.get_song_for_mood(user_data['userCurrentMood'],user_data['userData'])
             print(f"Playing song {song_url['Song URI']}")
             webbrowser.get(chrome_path).open(song_url['Song URI'])
     elif new_face_for != '':
         print(f"Loading new picture = [{picToUse}], for [{new_face_for}] in group [{personGroupId}]")
         user_data = mm360.addFaceToExistingPerson(picToUse, personGroupId, new_face_for)
         print(f" USER_DATA = {user_data}, calling sq.get_song_for_mood()")
-        song_url = sq.get_song_for_mood(user_data['userCurrentMood'],None)
+        song_url = sq.get_song_for_mood(user_data['userCurrentMood'],user_data['userData'])
         print(f"Playing song {song_url['Song URI']}")
         webbrowser.get(chrome_path).open(song_url['Song URI'])
 

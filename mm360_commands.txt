@@ -1,8 +1,10 @@
 # Load the new PersonGroup will images to train
 python mm360_app.py -f ./family_pictures --load-learn skb-family
+python mm360_app.py -f ./group_pictures --load-learn mm360_group1
 
 # Login to MyMusic Realtime - camera will take a pic, and get mood 
 python mm360_app.py -f ./family_pictures -m skb-family
+python mm360_app.py -f ./group_pictures -m mm360_group1
 
 # Login to MyMusic using an existing pic - no camera action 
 python mm360_app.py -f ./family_pictures -m skb-family -p ./mm360_filename.jpg
