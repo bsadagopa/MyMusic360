@@ -237,6 +237,9 @@ def get_song_for_mood(mood,username):
     #get random track
     rand_idx = random.randint(0, mood_tracks_df['Song URI'].count()-1)
     track = mood_tracks_df.iloc[rand_idx,:]
+    if 'https' not in track['Song URI']:
+        song_uid = track['Song URI'].split(':')[2]
+        track['Song URI'] = "https://open.spotify.com/track/" + song_uid
     radar_plot_track(track,username)
     print(f"{username} : {track['Mood']} | {track['Song Name']} - {track['Song URI']}")
     return(track)
