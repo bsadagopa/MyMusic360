@@ -2,6 +2,9 @@
 
 import sys, getopt, os
 import mm360_face_reader as mm360
+#sys.path.append('./Code')
+import Spotify_Query as sq
+
 #################
 # Usage syntax
 #################
@@ -36,6 +39,7 @@ def main(argv):
     root_folder = './group_pictures'
     picToUse = ''
     new_face_for = ''
+    user_data = {}
 
     try:
         opts, args = getopt.getopt(argv,"hf:l:m:p:n:",["help", "root_folder=", "load-learn=", "my_music=", "pic=", "new_face_for="])
@@ -88,13 +92,15 @@ def main(argv):
         print(f"handleMM_User({personGroupId})")
         if (picToUse != ''):
             print(f"Picture = {picToUse}")
-            mm360.handleMM_User(personGroupId, picToUse)
+            user_data = mm360.handleMM_User(personGroupId, picToUse)
         else:
-            mm360.handleMM_User(personGroupId)
+            user_data = mm360.handleMM_User(personGroupId)
     elif new_face_for != '':
         print(f"Loading new picture = [{picToUse}], for [{new_face_for}] in group [{personGroupId}]")
-        mm360.addFaceToExistingPerson(picToUse, personGroupId, new_face_for)
+        user_data = mm360.addFaceToExistingPerson(picToUse, personGroupId, new_face_for)
 
+    print(f" USER_DATA = {user_data}")
+    sq.get_song_for_mood(user_data['userCurrentMood'],None)
 #################
 # Starting Point
 #################
