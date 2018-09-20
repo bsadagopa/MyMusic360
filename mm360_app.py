@@ -4,6 +4,8 @@ import sys, getopt, os
 import mm360_face_reader as mm360
 #sys.path.append('./Code')
 import Spotify_Query as sq
+import webbrowser
+import platform
 
 #################
 # Usage syntax
@@ -33,6 +35,19 @@ def usage():
 # Main 
 #################
 def main(argv):
+    os_name = platform.platform()
+    if(os_name.split('-')[0] == 'Windows'):
+        print(f"Running in Windows")
+        chrome_path = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
+    elif(os_name.split('-')[0] == 'Darwin'): # os == Mac
+        print(f"Running in Mac")
+        chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
+    else: #(os == Linux)
+        print(f"Running in Linux")
+        # chrome_path = '/usr/bin/google-chrome %s'
+    
+    print(f"Chrome Path = {chrome_path}")
+    
     load_learn = False
     my_music = False
     personGroupId = ''
@@ -94,16 +109,22 @@ def main(argv):
             print(f"Picture = {picToUse}")
             user_data = mm360.handleMM_User(personGroupId, picToUse)
             print(f" USER_DATA = {user_data}, calling sq.get_song_for_mood()")
-            sq.get_song_for_mood(user_data['userCurrentMood'],None)
+            song_url = sq.get_song_for_mood(user_data['userCurrentMood'],None)
+            print(f"Playing song {song_url['Song URI']}")
+            webbrowser.get(chrome_path).open(song_url['Song URI'])
         else:
             user_data = mm360.handleMM_User(personGroupId)
             print(f" USER_DATA = {user_data}, calling sq.get_song_for_mood()")
-            sq.get_song_for_mood(user_data['userCurrentMood'],None)
+            song_url = sq.get_song_for_mood(user_data['userCurrentMood'],None)
+            print(f"Playing song {song_url['Song URI']}")
+            webbrowser.get(chrome_path).open(song_url['Song URI'])
     elif new_face_for != '':
         print(f"Loading new picture = [{picToUse}], for [{new_face_for}] in group [{personGroupId}]")
         user_data = mm360.addFaceToExistingPerson(picToUse, personGroupId, new_face_for)
         print(f" USER_DATA = {user_data}, calling sq.get_song_for_mood()")
-        sq.get_song_for_mood(user_data['userCurrentMood'],None)
+        song_url = sq.get_song_for_mood(user_data['userCurrentMood'],None)
+        print(f"Playing song {song_url['Song URI']}")
+        webbrowser.get(chrome_path).open(song_url['Song URI'])
 
     
 #################

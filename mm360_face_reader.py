@@ -420,7 +420,7 @@ def trainPersonGroup(personGroupId):
 
 # *** Identifying unknown faces against the PersonGroup using the Face - Identify API ***<br>
 
-# In[118]:
+# In[147]:
 
 
 #######
@@ -433,6 +433,8 @@ def identifyPerson(filename, personGroupId):
         response = CF.face.detect(filename, attributes='emotion')
         face_ids = [d['faceId'] for d in response]
         print(f"face_ids = {face_ids}")
+        if(face_ids == []):
+            raise Exception(f"Exception:FaceId not recognized. Please check the picture taken for correct ligting etc.")
     
         identified_faces = CF.face.identify(face_ids, personGroupId)
         print(f"identified_faces = {identified_faces}")
@@ -781,7 +783,7 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 # CF.person.get('mm360_group1', person_id)
 
 
-# In[136]:
+# In[153]:
 
 
 # print(CF.person.lists("mm360_group1"))
@@ -821,7 +823,7 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 # print(persisted_face_id)
 
 
-# In[51]:
+# In[145]:
 
 
 # CF.person_group.get_status("mm360_group1")
@@ -876,10 +878,16 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 # handleMM_User('mm360_group1', './family_pictures/jes_anger.jpg')
 
 
-# In[131]:
+# In[155]:
 
 
-# handleMM_User('mm360_group1')
+# CF.face.identify(['1ca182d5-48d6-49bd-8e0a-1b88da61a032'], 'mm360_group1')
+
+
+# In[154]:
+
+
+# handleMM_User("mm360_group1")
 
 
 # In[132]:
@@ -888,7 +896,7 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 # CF.person.get('mm360_group1', None)
 
 
-# In[140]:
+# In[142]:
 
 
 #deletePersonGroup('mm360_group1')
