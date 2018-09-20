@@ -888,8 +888,8 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 # CF.person.get('mm360_group1', None)
 
 
-# In[120]:
+# In[140]:
 
 
-deletePersonGroup('mm360_group1')
+#deletePersonGroup('mm360_group1')
 

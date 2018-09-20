@@ -93,14 +93,19 @@ def main(argv):
         if (picToUse != ''):
             print(f"Picture = {picToUse}")
             user_data = mm360.handleMM_User(personGroupId, picToUse)
+            print(f" USER_DATA = {user_data}, calling sq.get_song_for_mood()")
+            sq.get_song_for_mood(user_data['userCurrentMood'],None)
         else:
             user_data = mm360.handleMM_User(personGroupId)
+            print(f" USER_DATA = {user_data}, calling sq.get_song_for_mood()")
+            sq.get_song_for_mood(user_data['userCurrentMood'],None)
     elif new_face_for != '':
         print(f"Loading new picture = [{picToUse}], for [{new_face_for}] in group [{personGroupId}]")
         user_data = mm360.addFaceToExistingPerson(picToUse, personGroupId, new_face_for)
+        print(f" USER_DATA = {user_data}, calling sq.get_song_for_mood()")
+        sq.get_song_for_mood(user_data['userCurrentMood'],None)
 
-    print(f" USER_DATA = {user_data}")
-    sq.get_song_for_mood(user_data['userCurrentMood'],None)
+    
 #################
 # Starting Point
 #################
