@@ -9,7 +9,7 @@
 # ##### mm360_face_reader then sends the user details including mood to the audio selection system.
 # ##### Audio selection system will use the mood to play - recommend the music for the user.
 
-# In[9]:
+# In[2]:
 
 
 import cognitive_face as CF
@@ -32,7 +32,7 @@ import time
 # *** Train a PersonGroup using the PersonGroup – Train API ***<br>
 # *** Identifying unknown faces against the PersonGroup using the Face - Identify API ***<br>
 
-# In[10]:
+# In[4]:
 
 
 #######
@@ -67,7 +67,7 @@ CF.BaseUrl.set(uri_base)
 CF.Key.set(subscription_key)
 
 
-# In[11]:
+# In[6]:
 
 
 #######
@@ -80,7 +80,7 @@ def getBinaryFileData(filename):
         return img_data
 
 
-# In[12]:
+# In[7]:
 
 
 # def take_picture():
@@ -97,7 +97,7 @@ def getBinaryFileData(filename):
 #     print("Succesfully took mm360_filename.jpg")
 
 
-# In[13]:
+# In[8]:
 
 
 #######
@@ -146,7 +146,7 @@ def take_picture():
     print(f'Campleted taking picture.')
 
 
-# In[14]:
+# In[9]:
 
 
 #######
@@ -165,7 +165,7 @@ def getRectangle(faceDictionary):
 
 # *** Detecting faces using the Face - Detect API ***<br>
 
-# In[15]:
+# In[10]:
 
 
 #######
@@ -196,7 +196,7 @@ def recogn_from_local_img(filename):
 #     print(face_ids)
 
 
-# In[16]:
+# In[11]:
 
 
 #######
@@ -219,7 +219,7 @@ def drawRectangeAroungFace(img_url):
     img.show()
 
 
-# In[17]:
+# In[12]:
 
 
 #json.loads(recogn_from_local_img_1(img_url))[0]
@@ -230,7 +230,7 @@ def drawRectangeAroungFace(img_url):
 
 # *** Delete a PersonGroup using the PersonGroup – Delete API ***<br>
 
-# In[18]:
+# In[13]:
 
 
 #######
@@ -249,7 +249,7 @@ def deletePersonGroup(personGroupId):
 
 # *** Creating PersonGroups using the PersonGroup - Create API *** <br>
 
-# In[19]:
+# In[14]:
 
 
 #######
@@ -277,7 +277,7 @@ def createPersonGroup(personImage, personGroupId):
 
 # *** Creating persons using the PersonGroup Person - Create API ***<br>
 
-# In[20]:
+# In[15]:
 
 
 #######
@@ -310,7 +310,7 @@ def createPerson(personGroupId, personName):
 
 # *** Add persons using the PersonGroup Person - Create API ***<br>
 
-# In[21]:
+# In[16]:
 
 
 #######
@@ -350,54 +350,9 @@ def addPersonFace(personImage,
         raise e
 
 
-# #### Add a New Person Face to a existing Person
-
-# In[22]:
-
-
-#######
-# addFaceToExistingPerson
-#######
-def addFaceToExistingPerson(personImage,
-                  personGroupId,
-                  user_name_key
-                  ):
-    try:
-        #add_face(image, person_group_id, person_id, user_data=None, target_face=None).
-        #targetFace=left,top,width,height
-        #"targetFace=10,10,100,100"
-        
-        personUserData = recogn_from_local_img(personImage)
-        tf_rect = personUserData[0]['faceRectangle']
-        tf_rect_val = f'{tf_rect["left"]},{tf_rect["top"]},{tf_rect["width"]},{tf_rect["height"]}'
-        print(tf_rect_val)
-            
-        # get the current members in the PersonGroup List
-        currentGroupMembers = CF.person.lists(personGroupId)
-        for user in currentGroupMembers:
-            if(user['name'] == user_name_key):
-                persisted_face_id = CF.person.add_face(personImage, 
-                                                       personGroupId, 
-                                                       user['personId'], 
-                                                       user['name'],
-                                                       #f'{personGroupId} person data',
-                                                       tf_rect_val)
-            else: #NEw addition
-                print(f"Cannot ADD Person Face for {user_name_key}, PersonGroupId={personGroupId}")
-                print(f"user['name'] = {user['name']} Not Found!!")
-
-        print(f"CF.person.lists: {CF.person.lists(personGroupId)}")
-        print(f"Sucessfully added ")
-
-        return persisted_face_id
-    except Exception as e:
-        print(f"EXCEPTION :: {e}")  
-        raise e
-
-
 # *** Train a PersonGroup using the PersonGroup – Train API ***<br>
 
-# In[23]:
+# In[17]:
 
 
 #######
@@ -420,15 +375,13 @@ def trainPersonGroup(personGroupId):
 
 # *** Identifying unknown faces against the PersonGroup using the Face - Identify API ***<br>
 
-# In[118]:
+# In[18]:
 
 
 #######
 # identifyPerson
 #######
 def identifyPerson(filename, personGroupId):
-    new_user = True
-    
     try:
         response = CF.face.detect(filename, attributes='emotion')
         face_ids = [d['faceId'] for d in response]
@@ -436,50 +389,23 @@ def identifyPerson(filename, personGroupId):
     
         identified_faces = CF.face.identify(face_ids, personGroupId)
         print(f"identified_faces = {identified_faces}")
-    
         # get the emotions for the matching face_ids
-        # If face id is new, i.e. New User - not loaded into the PersonGroupId passed in,
-        # then return just set the data as 'NewUser'
         responses = []
         for d in response:
             for ided_face in identified_faces:
-                try:
-                    print(f"ided_face = {ided_face}")
-                    if(ided_face['candidates'] == []):
-                        print(f"=======No Candidates=========")
-                        continue
-                except Exception as ce:
-                    print(f"====Exception, candidates = {ce}")
-                    continue
-                    
                 if(d['faceId'] == ided_face['faceId']):
-                    new_user = False
-                    print(f"INSIDE identifyPerson, d= {d}")
+                    #print(d)
                     responses.append({
                         'faceId': d['faceId'],
                         'candidates':ided_face['candidates'],
-                        'emotion': d['faceAttributes']['emotion']})           
-        
-        if(new_user == False):
-            print("INSIDE new_user = FALSE")
-            print(responses)
-            return responses
-        else:
-
-            print("INSIDE new_user = TRUE")
-            print("Welcome New User!")
-            responses.append({
-                        'faceId': d['faceId'],
-                        'candidates':'NewUser',
                         'emotion': d['faceAttributes']['emotion']})
             print(responses)
-            return responses
-            
+        return responses
     except Exception as e:
-        print(f"EXCEPTION identifyPerson():{e}")
+        print(f"EXCEPTION:{e}")
 
 
-# In[25]:
+# In[ ]:
 
 
 # 'emotion': {'anger': 0.0,
@@ -494,7 +420,7 @@ def identifyPerson(filename, personGroupId):
 # print(max(enumerate(a),key=lambda x: x[1])[0])
 
 
-# In[26]:
+# In[20]:
 
 
 def getEmotionsAsList(emotion):
@@ -512,7 +438,7 @@ def getEmotionsAsList(emotion):
     return emotionList                         
 
 
-# In[27]:
+# In[21]:
 
 
 def guageEmotionList(emotion):
@@ -536,7 +462,7 @@ def guageEmotionList(emotion):
 # <p>4 Adds pics under each Person </p>
 # <p>5 Trains the PersonGroup </p>
 
-# In[28]:
+# In[22]:
 
 
 #######
@@ -649,7 +575,7 @@ def loadGroupImages(folder, personGroupId):
 # <b> guage the mood of the person - single value, highest from emotion will be used <br>
 # <b> call spotify wrapper layer of the software , pass the user-info: user_id, mood
 
-# In[129]:
+# In[23]:
 
 
 def handleMM_User(groupUserId, pic_to_identify = None):
@@ -660,41 +586,29 @@ def handleMM_User(groupUserId, pic_to_identify = None):
             take_picture()
         else:
             img_url = pic_to_identify
-        
+            
         # identify the person from the stored collection 
-        responses = identifyPerson(img_url, groupUserId)              
-        print(responses)
-        print("++++++++++++")
-        
+        responses = identifyPerson(img_url, groupUserId)
+        person_id = responses[0]['candidates'][0]['personId']
         # guage the mood of the person - single value, highest from emotion will be used 
         print(responses[0]['emotion'])
         mood = guageEmotionList(responses[0]['emotion'])
         print(f"Mood = {mood}")
-        
-        if(responses[0]['candidates'] != 'NewUser'):
-            person_id = responses[0]['candidates'][0]['personId']
-            info = CF.person.get(groupUserId, person_id)
-            comm_To_mm360_wrapper = {
-                                'userName':info['name'],
-                                'userData':info['userData'],
-                                'userCurrentMood':mood
-            }
-            print(f"Welcome USER ==> {info['userData']}, your mood is {mood}")
-            print(f"data_sent_to_music(spotify)_wrapper = {comm_To_mm360_wrapper}")
-        else:
-            person_id = "NewUser"
-            comm_To_mm360_wrapper = {
-                        'userName': 'NewUser',
-                        'userData': 'NewUser',
-                        'userCurrentMood':mood
-            }
-            print(f"Welcome USER ==> {person_id}, your mood is {mood}")
-            print(f"data_sent_to_music(spotify)_wrapper = {comm_To_mm360_wrapper}")
+        info = CF.person.get(groupUserId, person_id)
     except Exception as e:
         print(f"EXCEPTION-handleMM_User::{e}")
         print(f"!! FATAL, Communication to comm_To_mm360_wrapper did not occur !!")
         return
+    
+    comm_To_mm360_wrapper = {
+        'userName':info['name'],
+        'userData':info['userData'],
+        'userCurrentMood':mood
+    }
 
+    print(f"Welcome USER ==> {info['userData']}, your mood is {mood}")
+    print(f"data_sent_to_music(spotify)_wrapper = {comm_To_mm360_wrapper}")
+    
     return comm_To_mm360_wrapper
     #
     #  TBD -- CAll to Spotify Wrapper layer
@@ -704,7 +618,7 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 
 # ## Main start function call to load the images and be ready to recognize pic
 
-# In[30]:
+# In[39]:
 
 
 #loadGroupImages('./group_pictures', "mm360_group1")
@@ -712,15 +626,15 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 
 # ## Step 2: Running the visual login and mood capture
 
-# In[69]:
+# In[40]:
 
 
 # Calling the user login i.e. photo capture for authentication and mood capture
 # user detail name, credentials and mood will be sent to the music wrapper (spotify) component
-# handleMM_User("mm360_group1")
+#handleMM_User()
 
 
-# In[60]:
+# In[ ]:
 
 
 # skb_group_id = createPersonGroup('./group_pictures/skb/skb2.jpg',
@@ -736,7 +650,7 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 #               recogn_from_local_img(img_url))
 # trainPersonGroup("mm360_group1")
 #deletePersonGroup("skb_family_group")
-#deletePersonGroup("mm360_group1")
+# deletePersonGroup("mm360_group1")
 
 
 # In[ ]:
@@ -745,7 +659,7 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 # take_picture()
 
 
-# In[56]:
+# In[52]:
 
 
 # responses = identifyPerson('mm360_filename.jpg', "mm360_group1")
@@ -781,51 +695,18 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 # CF.person.get('mm360_group1', person_id)
 
 
-# In[136]:
+# In[6]:
 
 
-# print(CF.person.lists("mm360_group1"))
-#print(CF.person.lists("skb-family"))
+#print(CF.person.lists("mm360_group1"))
+print(CF.person.lists("skb-family"))
 
 
-# In[72]:
+# In[5]:
 
 
-# users = CF.person.lists("mm360_group1")
-#users = CF.person.lists("skb-family")
-
-
-# In[135]:
-
-
-# users
-
-
-# In[70]:
-
-
-# personUserData = recogn_from_local_img('./family_pictures/jes_anger.jpg')
-
-
-# In[50]:
-
-
-# for user in users:
-#     if(user['name'] == 'ak'):
-#         persisted_face_id = CF.person.add_face('group_pictures/ak/ak_pic1.jpg', 
-#                                                "mm360_group1", 
-#                                                user['personId'], 
-#                                                user['name'],
-#                                                #f'{personGroupId} person data',
-#                                                tf_rect_val)
-# print(persisted_face_id)
-
-
-# In[51]:
-
-
-# CF.person_group.get_status("mm360_group1")
-#CF.person_group.get_status("skb-family")
+#CF.person_group.get_status("mm360_group1")
+CF.person_group.get_status("skb-family")
 
 
 # In[ ]:
@@ -836,13 +717,13 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 #recogn_from_local_img(img_url)
 
 
-# In[134]:
+# In[ ]:
 
 
-#faces = identifyPerson('./family_pictures/jes_anger.jpg', "mm360_group1")
-# print(faces)
+#faces = identifyPerson('mm360_filename_2.jpg', "mm360_group1")
+#print(faces)
 #identifyPerson('mm360_filename_3.jpg', "mm360_group1")
-# identifyPerson('mm360_filename.jpg', "mm360_group1")
+#identifyPerson('mm360_filename.jpg', "mm360_group1")
 
 
 # In[ ]:
@@ -868,28 +749,4 @@ def handleMM_User(groupUserId, pic_to_identify = None):
 
 
 # responses = identifyPerson('mm360_filename.jpg', "mm360_group1")
-
-
-# In[133]:
-
-
-# handleMM_User('mm360_group1', './family_pictures/jes_anger.jpg')
-
-
-# In[131]:
-
-
-# handleMM_User('mm360_group1')
-
-
-# In[132]:
-
-
-# CF.person.get('mm360_group1', None)
-
-
-# In[120]:
-
-
-deletePersonGroup('mm360_group1')
 
