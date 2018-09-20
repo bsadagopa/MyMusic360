@@ -207,7 +207,7 @@ def radar_plot_track(track,username):
 
     fig = go.Figure(data=data, layout=layout)
     #py.iplot(fig)
-    py.offline.plot(fig, filename='name.html')
+    plotly.offline.plot(fig, filename='name.html')
 
 def get_song_for_mood(mood,username):
     global sp
