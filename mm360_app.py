@@ -126,15 +126,22 @@ def main(argv):
         print(f"Playing song {song_url['Song URI']}")
         webbrowser.get(chrome_path).open(song_url['Song URI'])
 
+################
+# def main(argv):
+#################
+def from_web():
+    in_argv = ['-f', './group_pictures', '-m', 'mm360_group1']
+    main(in_argv)
+
     
 #################
 # Starting Point
 #################
 if __name__ == "__main__":
-	
-	main(sys.argv[1:])
+    main(sys.argv[1:])
+    print("COMPLETED!")
 
-	print("COMPLETED!")
+
 
 
 
