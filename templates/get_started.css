@@ -1,0 +1,62 @@
+body{
+    padding-top:70px;
+}
+.jumbotron{
+    color: #2c3e50;
+    background: #ecf0f1;
+}
+
+.navbar-inverse{
+    background: #2c3e50
+}
+
+.navbar-inverse .navbar-nav>li>a {
+    color: white;
+}
+
+.navbar-inverse .navbar-brand {
+    color: white;
+}
+
+.jumbotron H1 {
+    animation: smaller-title 1.2s forwards linear;
+  }
+
+.jumbotron p {
+    animation: smaller-title 1.2s forwards linear;
+    animation-delay: 1.2s;
+  }
+
+/* keyframe animations which will be used to animate the title */
+@keyframes title {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    font-size: 7.5rem;
+    opacity: 1;
+  }
+}
+
+@keyframes smaller-title {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    font-size: 5.5rem;
+    opacity: 1;
+  }
+}
+
+@keyframes subtitle {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+ */
