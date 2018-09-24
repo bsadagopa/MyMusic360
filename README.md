@@ -19,11 +19,9 @@ We will try to select that song from multiple sources across the web like spotif
 You signon to the app using face detection, Microsoft FACE API AI-ML is used to capture you current mood as you logon. This information is used to recommend songs.
 
 ***Key Product features:***
-* recommend a friend based on similarity of songs (audio features), artists, category
-user statistics - top songs, artists, category
-* top artists/categories by region - Get most popular music based on location and then determine the best location for a user based on what kind of music they like
-"rising" artists - artists who are getting more plays per day than previously
-would require us pulling data day over day ourselves - perhaps need to limit look back to just one week
-* Basic B % - how much does a users playlists match up with Top 100 songs
-User music recommendation - create a playlist based on other playlists that allows user to set certain features such as a block list, keep music in same category, only artists that aren't in existing playlist,only songs that aren't in existing playlist, etc.
-Take all songs from all playlists and recommend new playlists by k means clustering on audio features
+* Credential check based on picture taken. 
+* If not a setup - configured user, then allowed in as a guest user.
+* Face attributed - mood is read using microsost FACE Api.
+* For existing-setup user, their collection from Spotify is accessed and song matching close to existing mood is played.
+* For guest user, song matching the users mood from the current top 100 list is played.
+
