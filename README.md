@@ -21,7 +21,7 @@ You signon to the app using face detection, Microsoft FACE API AI-ML is used to 
 ***Key Product features:***
 * Credential check based on picture taken. 
 * If not a setup - configured user, then allowed in as a guest user.
-* Face attributed - mood is read using microsost FACE Api.
+* Face attributes - mood is read using microsost FACE Api.
 * For existing-setup user, their collection from Spotify is accessed and song matching close to existing mood is played.
 * For guest user, song matching the users mood from the current top 100 list is played.
 
